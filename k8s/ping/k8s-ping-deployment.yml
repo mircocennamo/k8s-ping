@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-ping-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-ping
+  template:
+    metadata:
+      labels:
+        app: k8s-ping
+    spec:
+      containers:
+        - name: k8s-ping-container
+          image: mircocennamo/k8s-ping:0.0.10-SNAPSHOT
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: spring.datasource.url
+            - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: spring.datasource.driver-class-name
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: spring.datasource.username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: spring.datasource.password
+          ports:
+            - containerPort: 8089
+          envFrom:
+            - configMapRef:
+                name: k8s-ping-config
+            - configMapRef:
+                name: db-config
+            - secretRef:
+                name: db-secret
+

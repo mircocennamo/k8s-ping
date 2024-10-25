@@ -1,0 +1,25 @@
+
+
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER-CLASS-NAME}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  application:
+    name: k8s-ping
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: true
+    kubernetes:
+      config:
+        enabled: true
+        sources:
+          - name: k8s-ping-config
+server:
+  port: 8089
